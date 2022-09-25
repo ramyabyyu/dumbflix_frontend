@@ -11,6 +11,7 @@ import * as Path from "../../routeNames";
 
 const AddFilm = () => {
   const { user } = useSelector((state) => state.auth);
+  const { profile } = useSelector((state) => state.profile);
   const { isSuccess, isError } = useSelector((state) => state.film);
 
   // film data
@@ -77,10 +78,10 @@ const AddFilm = () => {
     if (isError) console.log("Something Wrong I can feel it");
 
     dispatch(reset());
-  }, [isSuccess, isError, dispatch, reset]);
+  }, [isSuccess, isError, dispatch]);
 
   useEffect(() => {
-    if (!user && !user?.is_admin) {
+    if (!user && !profile?.is_admin) {
       navigate(Path.HOME);
     }
   }, [user, navigate]);
