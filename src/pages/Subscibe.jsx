@@ -47,6 +47,7 @@ const Subscibe = () => {
   useEffect(() => {
     const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
     const myMidtransClientKey = process.env.REACT_APP_MIDTRANS_CLIENT_KEY;
+    // const myMidtransClientKey = "SB-Mid-client-ItYKMqL2lC-ARs2N";
 
     let scriptTag = document.createElement("script");
     scriptTag.src = midtransScriptUrl;

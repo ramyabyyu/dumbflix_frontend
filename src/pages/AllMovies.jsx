@@ -37,13 +37,19 @@ const AllMovies = () => {
     }
 
     dispatch(getFilms());
-    dispatch(getProfile());
 
     return () => {
       dispatch(reset());
+    };
+  }, [isError, navigate, dispatch, message]);
+
+  useEffect(() => {
+    dispatch(getProfile());
+
+    return () => {
       dispatch(profileReset());
     };
-  }, [isError, navigate, message]);
+  }, [dispatch, navigate]);
 
   if (isLoading) {
     return <LoadingSpinner size="big" />;

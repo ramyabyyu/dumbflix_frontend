@@ -27,20 +27,19 @@ const MovieDetail = () => {
   useEffect(() => {
     if (!user && !profile.is_active) {
       navigate(Path.HOME);
+    } else {
+      dispatch(getFilmDetail(slug));
+      console.log(films);
+      dispatch(getProfile());
     }
-  }, [user, navigate]);
 
-  useEffect(() => {
     if (isError) console.log(message);
-
-    dispatch(getFilmDetail(slug));
-    dispatch(getProfile());
 
     return () => {
       dispatch(reset());
       dispatch(profileReset());
     };
-  }, [isError, message, dispatch, navigate]);
+  }, [user, navigate, message, dispatch, isError]);
 
   if (isLoading) return <LoadingSpinner size="big" />;
 
