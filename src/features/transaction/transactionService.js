@@ -12,6 +12,10 @@ const createTransaction = async (token) => {
   return response.data.data;
 };
 
+// const updateTransactionStatus = async (token, transactionData) => {
+//   const response = await API.post("")
+// }
+
 const transactionService = {
   getTransactions,
   createTransaction,

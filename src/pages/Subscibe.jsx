@@ -24,25 +24,8 @@ const Subscibe = () => {
 
   const handleFileInput = (e) => hiddenFileInput.current.click();
 
-  const [transferImg, setTransferImg] = useState("");
-  const [transferImgSrc, setTransferImgSrc] = useState("");
-
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (transferImg) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        let result = reader.result;
-        document.getElementById("transfer-img").classList.remove("d-none");
-        setTransferImgSrc(result);
-      };
-
-      reader.readAsDataURL(transferImg);
-    }
-  }, [transferImg]);
 
   useEffect(() => {
     const midtransScriptUrl = "https://app.sandbox.midtrans.com/snap/snap.js";
@@ -60,40 +43,12 @@ const Subscibe = () => {
     };
   }, []);
 
-  useEffect(() => {
-    // if (isSuccess) {
-    //   window.snap.pay(token, {
-    //     onSuccess: function (result) {
-    //       navigate(Path.PROFILE);
-    //     },
-    //     onPending: function (result) {
-    //       navigate(Path.SUBSCRIBE);
-    //     },
-    //     onError: function (result) {
-    //       console.log(result);
-    //     },
-    //     onClose: function (result) {
-    //       alert("You closed the popup without finishing the payment");
-    //     },
-    //   });
-    // }
-  }, []);
-
   const handleBuy = async (e) => {
-    // const tokenInJSON = JSON.parse(localStorage.getItem("user"));
-    // const authToken = tokenInJSON.token;
     try {
       e.preventDefault();
-      // const config = {
-      //   headers: {
-      //     "Content-type": "application/json",
-      //     Authorization: `Bearer ${authToken}`,
-      //   },
-      // };
 
       const formData = new FormData();
       formData.set("user_id", user?.id);
-      formData.set("email", user?.email);
 
       const response = await API.post("/transaction", formData);
       console.log(response);
@@ -147,41 +102,6 @@ const Subscibe = () => {
                 className="d-none"
                 value={user?.id}
               />
-              <div className="mb-3">
-                <Form.Control
-                  className="input__payment bg-secondary"
-                  name="accountNumber"
-                  placeholder="Input your account number"
-                  type="text"
-                />
-              </div>
-              <div className={transferImg === "" ? "mb-5" : "mb-3"}>
-                <input
-                  type="file"
-                  className="d-none"
-                  accept="image/*"
-                  ref={hiddenFileInput}
-                  onChange={(e) => setTransferImg(e.target.files[0])}
-                />
-                <Button
-                  variant="light"
-                  className="d-flex text-danger justify-content-between w-100 fw-bold"
-                  onClick={handleFileInput}
-                >
-                  <span>Attache proof of transfer</span>
-                  <span>
-                    <FaPaperclip />
-                  </span>
-                </Button>
-              </div>
-              <div className="my-3">
-                <img
-                  src={transferImgSrc}
-                  alt=""
-                  className="transfer__img d-none"
-                  id="transfer-img"
-                />
-              </div>
               <div>
                 <Button
                   type="button"
@@ -189,7 +109,7 @@ const Subscibe = () => {
                   className="w-100 fw-bold"
                   onClick={handleBuy}
                 >
-                  Send
+                  Pay IDR 30.000,00-,
                 </Button>
               </div>
             </Form>

@@ -15,10 +15,17 @@ import {
   getTransactions,
   reset,
 } from "../../features/transaction/transactionSlice";
+import {
+  getProfile,
+  reset as profileReset,
+} from "../../features/profile/profileSlice";
 import LoadingSpinner from "../../components/LoadingSpinner";
+import * as Path from "../../routeNames";
+import moment from "moment";
 
 function Transactions() {
   const { user } = useSelector((state) => state.auth);
+  const { profile } = useSelector((state) => state.profile);
   const { transactions, isSuccess, isLoading } = useSelector(
     (state) => state.transaction
   );
@@ -27,16 +34,50 @@ function Transactions() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (!user || !user?.is_admin) {
-      navigate("/");
+    if (user && user.is_admin) {
+      dispatch(getTransactions());
+      dispatch(getProfile());
+    } else {
+      navigate(Path.HOME);
     }
-
-    dispatch(getTransactions());
 
     return () => {
       dispatch(reset());
+      dispatch(profileReset());
     };
   }, [navigate, dispatch, user]);
+
+  const countDuration = (startDate, dueDate) => {
+    const due = new Date(dueDate);
+    startDate = new Date();
+
+    let duration;
+
+    if (startDate < due) {
+      duration = new Date(due - startDate);
+    }
+
+    let years = duration.getFullYear() - 1970;
+    let months = duration.getMonth();
+    let days = duration.getDate();
+
+    let yearTxt = "year";
+    let monthTxt = "month";
+    let dayTxt = "day";
+
+    if (years > 1) yearTxt += "s";
+    if (months > 1) monthTxt += "s";
+    if (days > 1) dayTxt += "s";
+
+    if (years >= 1) {
+      duration = `${years} ${yearTxt} ${months} ${monthTxt} ${days} ${dayTxt}`;
+    } else if (months >= 1) {
+      duration = `${months} ${monthTxt} ${days} ${dayTxt}`;
+    } else {
+      duration = `${days} ${dayTxt}`;
+    }
+    return duration;
+  };
 
   if (isLoading) {
     return <LoadingSpinner size="big" />;
@@ -52,12 +93,9 @@ function Transactions() {
               <thead style={{ height: "60px" }}>
                 <tr className="text-danger text-center align-items-center">
                   <th>No</th>
-                  <th>Name</th>
                   <th>Email</th>
                   <th>Proof of Transfer</th>
-                  <th>Start Date</th>
-                  <th>Due Date</th>
-                  <th>Status User</th>
+                  <th>Duration</th>
                   <th>Status Payment</th>
                   <th style={{ width: "60px" }}>Action</th>
                 </tr>
@@ -70,41 +108,71 @@ function Transactions() {
                     </td>
                   </tr>
                 ) : (
-                  <tr style={{ height: "60px" }} className="text-center">
-                    <td>1</td>
-                    <td>Ramy Ganteng</td>
-                    <td>ramy@ganteng.com</td>
-                    <td>bca.jpg</td>
-                    <td>26 / Hari</td>
-                    <td>26 / Hari</td>
-                    <td className="text-success">Active</td>
-                    <td className="text-success">Approve</td>
-                    <td>
-                      <Dropdown>
-                        <Dropdown.Toggle variant="dark"></Dropdown.Toggle>
-                        <Dropdown.Menu variant="dark">
-                          <Form>
-                            <Dropdown.Item>
-                              <input
-                                type="text"
-                                value="Approve"
-                                className="d-none"
-                              />
-                              <h6 className="text-success fw-bold">Approve</h6>
-                            </Dropdown.Item>
-                            <Dropdown.Item>
-                              <input
-                                type="text"
-                                value="Cancel"
-                                className="d-none"
-                              />
-                              <h6 className="text-danger fw-bold">Cancel</h6>
-                            </Dropdown.Item>
-                          </Form>
-                        </Dropdown.Menu>
-                      </Dropdown>
-                    </td>
-                  </tr>
+                  <>
+                    {transactions?.map((transaction, index) => (
+                      <tr
+                        style={{ height: "60px" }}
+                        className="text-center"
+                        key={index}
+                      >
+                        <td>{index + 1}</td>
+                        <td>{transaction.email}</td>
+                        <td>
+                          <img
+                            src={transaction.attache}
+                            alt="attache"
+                            width={80}
+                          />
+                        </td>
+                        <td>
+                          {countDuration(
+                            transaction.startdate,
+                            transaction.duedate
+                          )}
+                        </td>
+                        <td
+                          className={
+                            transaction.status === "pending"
+                              ? "text-warning"
+                              : transaction.status === "success"
+                              ? "text-success"
+                              : "text-danger"
+                          }
+                        >
+                          {transaction.status}
+                        </td>
+                        <td>
+                          <Dropdown>
+                            <Dropdown.Toggle variant="dark"></Dropdown.Toggle>
+                            <Dropdown.Menu variant="dark">
+                              <Form>
+                                <Dropdown.Item>
+                                  <input
+                                    type="text"
+                                    value="Approve"
+                                    className="d-none"
+                                  />
+                                  <h6 className="text-success fw-bold">
+                                    approve
+                                  </h6>
+                                </Dropdown.Item>
+                                <Dropdown.Item>
+                                  <input
+                                    type="text"
+                                    value="Cancel"
+                                    className="d-none"
+                                  />
+                                  <h6 className="text-danger fw-bold">
+                                    cancel
+                                  </h6>
+                                </Dropdown.Item>
+                              </Form>
+                            </Dropdown.Menu>
+                          </Dropdown>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
                 )}
               </tbody>
             </Table>
