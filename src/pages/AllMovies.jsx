@@ -32,10 +32,6 @@ const AllMovies = () => {
   // console.log("films = ", films);
 
   useEffect(() => {
-    if (isError) {
-      console.log(message);
-    }
-
     dispatch(getFilms());
     dispatch(getProfile());
 
@@ -43,7 +39,7 @@ const AllMovies = () => {
       dispatch(reset());
       dispatch(profileReset());
     };
-  }, [isError, navigate, dispatch, message]);
+  }, [navigate, dispatch]);
 
   if (isLoading) {
     return <LoadingSpinner size="big" />;
@@ -59,7 +55,7 @@ const AllMovies = () => {
         </Col>
       </Row>
       <Row className="justify-content-center mb-3">
-        {films.length < 1 ? (
+        {films?.length < 1 ? (
           <Col md={12}>
             <Card className="rounded shadow border-0 bg-dark text-white p-5">
               <h3 className="text-center text-white">No Film Avalaible😒</h3>
