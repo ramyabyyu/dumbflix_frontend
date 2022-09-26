@@ -76,8 +76,6 @@ const AddFilm = () => {
   useEffect(() => {
     if (isSuccess) navigate(Path.HOME);
     if (isError) console.log("Something Wrong I can feel it");
-
-    dispatch(reset());
   }, [isSuccess, isError, dispatch]);
 
   useEffect(() => {
