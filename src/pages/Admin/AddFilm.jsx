@@ -76,7 +76,7 @@ const AddFilm = () => {
   useEffect(() => {
     if (isSuccess) navigate(Path.HOME);
     if (isError) console.log("Something Wrong I can feel it");
-  }, [isSuccess, isError, dispatch]);
+  }, [isSuccess, isError]);
 
   useEffect(() => {
     if (!user && !profile?.is_admin) {
