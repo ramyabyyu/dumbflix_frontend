@@ -43,7 +43,7 @@ const AllMovies = () => {
       dispatch(reset());
       dispatch(profileReset());
     };
-  }, [isError, navigate, dispatch, message]);
+  }, [isError, navigate, message]);
 
   if (isLoading) {
     return <LoadingSpinner size="big" />;
